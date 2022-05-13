@@ -12,7 +12,7 @@ import {
 import  Web3 from "web3";
 import {ethers} from "ethers";
 import { soliditySha256 } from "ethers/lib/utils";
-
+const factoryabi = require('/home/kushal/Work/uniswap_swap_detector/src/factoryabi.json');
 
 let findingsCount = 0;
 const provider = new Web3.providers.HttpProvider(
@@ -75,9 +75,23 @@ function getaddress(
     )
 }
 
+async function getAddr(token0:string,token1:string) {
+  const uniContract = new web3.eth.Contract(
+    factoryabi,
+    '0x1F98431c8aD98523631AE4a59f267346ea31F984'
+  );
+  let a =  await(await uniContract.methods.getPool(token0,token1,10000)).call();
+  // uniContract.methods.getPool(token0,token1,10000).call().then(function(result:any){
+  //   console.log(result);
+  //   return result;
+  // })
+  console.log("addr " +a);
+  return a;
+}
+
 const initialize: Initialize = async() =>{
 
-  const token0 = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'; //usdc token
+  const token0 = '0x6b175474e89094c44da98b954eedeac495271d0f'; //dai token
   const token1 = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'.toLowerCase(); //weth token
   const factory = '0x1F98431c8aD98523631AE4a59f267346ea31F984';
   const _hexadem = '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f';
@@ -96,9 +110,13 @@ const initialize: Initialize = async() =>{
     token0,
     token1
   );
+
+  const ad = await getAddr(token0,token1);
+
   console.log(contractAddress);
   console.log(newAddress);
   console.log(addr);
+  console.log("address "+ad);
 }
 
 const handleTransaction: HandleTransaction = async (
