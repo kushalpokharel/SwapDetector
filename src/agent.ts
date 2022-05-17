@@ -27,9 +27,9 @@ const pairAddresses: string[] = [];
 async function getAddr(token0:string,token1:string) {
   const uniContract = new web3.eth.Contract(
     factoryabi,
-    '0x1F98431c8aD98523631AE4a59f267346ea31F984'.toLowerCase()
+    '0x1F98431c8aD98523631AE4a59f267346ea31F984'
   );
-  let a =  await uniContract.methods.getPool(token0,token1,50000).call();
+  let a =  await uniContract.methods.getPool(token0,token1,3000).call();
   console.log("addr " +a);
   return a;
 }
