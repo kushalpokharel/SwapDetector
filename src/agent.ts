@@ -50,7 +50,7 @@ async function getAddr(token0:string,token1:string, fee:BigNumberish) {
 const v3Create2 = (token0:string, token1:string, fee:BigNumberish) => {
   const salt: string = keccak256(defaultAbiCoder.encode(["address", "address", "uint24"], [token0, token1, fee]));
   const V3_FACTORY = '0x1F98431c8aD98523631AE4a59f267346ea31F984';
-  const V3_PAIR_INIT_CODE = '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f';
+  const V3_PAIR_INIT_CODE = '0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54';
   return getCreate2Address(V3_FACTORY, salt, V3_PAIR_INIT_CODE).toLowerCase();
 }
 
