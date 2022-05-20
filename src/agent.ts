@@ -38,7 +38,7 @@ const uniContract = new ethers.Contract(
   provider
 );
 
-//working correctly: querying the factory contract and returning the pool address
+//querying the factory contract and returning the pool address
 async function getAddr(token0:string,token1:string, fee:BigNumberish) {
   
   let a =  await uniContract.getPool(token0,token1,fee);
@@ -46,7 +46,7 @@ async function getAddr(token0:string,token1:string, fee:BigNumberish) {
   return a;
 }
 
-//not working correctly: calculating the address using create2.
+//calculating the address using create2.
 const v3Create2 = (token0:string, token1:string, fee:BigNumberish) => {
   const salt: string = keccak256(defaultAbiCoder.encode(["address", "address", "uint24"], [token0, token1, fee]));
   const V3_FACTORY = '0x1F98431c8aD98523631AE4a59f267346ea31F984';
@@ -73,24 +73,33 @@ const handleTransaction: HandleTransaction = async (
   txEvent: TransactionEvent
 ) => {
   const findings: Finding[] = [];
-  // console.log(txEvent);
   // limiting this agent to emit only 5 findings so that the alert feed is not spammed
   if (findingsCount >= 5) return findings;
+  console.log(txEvent.logs);
   // filter the transaction logs for Swap events
   const swapEvents = txEvent.filterLog(
     EVENT_NAME
   );
+  
   await Promise.all(
     swapEvents.map(async (swapEvent)  => {
-      // console.log(swapEvent);
+      console.log(swapEvent);
       // extract the pool address from the swap event
       const contractAddress = swapEvent.address;
       //get the smart contract reference from the above address
       const contractRef = getReference(contractAddress);
+      let token0Addr;
+      let token1Addr;
+      let fee;
       //get these parameters from the pool contract above
-      const token0Addr = await contractRef.token0();
-      const token1Addr = await contractRef.token1();
-      const fee = await contractRef.fee();
+      try{
+        token0Addr = await contractRef.token0();
+        token1Addr = await contractRef.token1();
+        fee = await contractRef.fee();
+      }
+      catch(e){
+        return [];
+      }
       //get/calculate the pool contract from above parameters
       const calcAddr = v3Create2(token0Addr,token1Addr,fee);
       const calcAddr1 = await getAddr(token0Addr,token1Addr,fee);
