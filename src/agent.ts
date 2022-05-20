@@ -42,7 +42,7 @@ const uniContract = new ethers.Contract(
 async function getAddr(token0:string,token1:string, fee:BigNumberish) {
   
   let a =  await uniContract.getPool(token0,token1,fee);
-  console.log("addr " +a);
+  // console.log("addr " +a);
   return a;
 }
 
@@ -75,7 +75,7 @@ const handleTransaction: HandleTransaction = async (
   const findings: Finding[] = [];
   // limiting this agent to emit only 5 findings so that the alert feed is not spammed
   if (findingsCount >= 5) return findings;
-  console.log(txEvent.logs);
+  // console.log(txEvent.logs);
   // filter the transaction logs for Swap events
   const swapEvents = txEvent.filterLog(
     EVENT_NAME
@@ -83,7 +83,7 @@ const handleTransaction: HandleTransaction = async (
 
   await Promise.all(
     swapEvents.map(async (swapEvent)  => {
-      console.log(swapEvent);
+      // console.log(swapEvent);
       // extract the pool address from the swap event
       const contractAddress = swapEvent.address;
       //get the smart contract reference from the above address
@@ -108,7 +108,7 @@ const handleTransaction: HandleTransaction = async (
         findings.push(
           Finding.fromObject({
             name: "SWAP",
-            description: `Swap method called in the pool ${calcAddr1}`,
+            description: `Swap method called in the pool ${calcAddr1.toLowerCase()}`,
             alertId: "FORTA-1",
             severity: FindingSeverity.Low,
             type: FindingType.Info,
@@ -121,10 +121,6 @@ const handleTransaction: HandleTransaction = async (
           })
         );
       }
-      // console.log("calcAddr " +calcAddr);
-      // console.log("calcAddr1 " +calcAddr1);
-      // console.log("token1 "+token1Addr);
-      // console.log(contractAddress);
       
       findingsCount++;
     })
