@@ -80,7 +80,7 @@ const handleTransaction: HandleTransaction = async (
   const swapEvents = txEvent.filterLog(
     EVENT_NAME
   );
-  
+
   await Promise.all(
     swapEvents.map(async (swapEvent)  => {
       console.log(swapEvent);

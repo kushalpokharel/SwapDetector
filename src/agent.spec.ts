@@ -64,7 +64,7 @@ describe("Swap method detectpr on Uniswap's pool ", () => {
     it("returns a finding even if there is a Swap event emitted by the pool contract", async () => {
     
         const txEvent:TestTransactionEvent = new TestTransactionEvent().setFrom("0xaaa");
-        txEvent.addEventLog(EVENT_NAME,ethmnwAddress);
+        txEvent.addEventLog("Swap(address,address,int256,int256,uint160,uint128,int24)",ethmnwAddress);
         console.log(txEvent);
         const findings = await handleTransaction(txEvent);
         console.log(findings);
