@@ -13,6 +13,7 @@ import {
   } from 'forta-agent-tools/lib/tests';
 import { BigNumberish } from "ethers";
 import { getCreate2Address, defaultAbiCoder, keccak256 } from "ethers/lib/utils";
+import { encodeParameter, encodeParameters } from "forta-agent-tools";
 
 const v3Create2 = (token0:string, token1:string, fee:BigNumberish) => {
     const salt: string = keccak256(defaultAbiCoder.encode(["address", "address", "uint24"], [token0, token1, fee]));
@@ -64,7 +65,7 @@ describe("Swap method detectpr on Uniswap's pool ", () => {
     it("returns a finding even if there is a Swap event emitted by the pool contract", async () => {
     
         const txEvent:TestTransactionEvent = new TestTransactionEvent().setFrom("0xaaa");
-        txEvent.addEventLog("Swap(address,address,int256,int256,uint160,uint128,int24)",ethmnwAddress);
+        txEvent.addEventLog("Swap(address,address,int256,int256,uint160,uint128,int24)",ethmnwAddress, encodeParameters(["address","address","int256","int256","uint160","uint128","int24"],["0xE592427A0AEce92De3Edee1F18E0157C05861564","0xDEF171Fe48CF0115B1d80b88dc8eAB59176FEe57","-0x042a49c079","0x7c260bbc0f374160", "0x5738dbc076b09c3c96106c3a5fee","0xe11969b37e863182","234"]));
         console.log(txEvent);
         const findings = await handleTransaction(txEvent);
         console.log(findings);
