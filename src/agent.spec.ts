@@ -46,7 +46,7 @@ const eventName = "Swap(address indexed sender, address indexed recipient, int25
 const event_iface = new Interface(["event Swap(address indexed,address indexed,int256,int256,uint160,uint128,int24)"]);
 const event = event_iface.getEvent("Swap");
 
-describe("Swap method detectpr on Uniswap's pool ", () => {
+describe("Swap method detector on Uniswap's pool ", () => {
   let handleTransaction: HandleTransaction;
 //   const mockTxEvent = createTransactionEvent({} as any);
 
@@ -72,20 +72,20 @@ describe("Swap method detectpr on Uniswap's pool ", () => {
     });
 
     it("returns a finding if there is a Swap event emitted by the pool contract", async () => {
-    
+
         const txEvent:TestTransactionEvent = new TestTransactionEvent().setFrom("0xaaa");
         const log = event_iface.encodeEventLog(event, ["0xE592427A0AEce92De3Edee1F18E0157C05861564","0xDEF171Fe48CF0115B1d80b88dc8eAB59176FEe57","-0x042a49c079","0x7c260bbc0f374160", "0x5738dbc076b09c3c96106c3a5fee","0xe11969b37e863182","234"])
-        txEvent.addAnonymousEventLog(ethmnwAddress,log.data, ...log.topics);
+        txEvent.addAnonymousEventLog(createAddress(ethmnwAddress),log.data, ...log.topics);
         // txEvent.addEventLog("Swap(address,address,int256,int256,uint160,uint128,int24)",ethmnwAddress, encodeParameters(["indexed address","indexed address","int256","int256","uint160","uint128","int24"],["0xE592427A0AEce92De3Edee1F18E0157C05861564","0xDEF171Fe48CF0115B1d80b88dc8eAB59176FEe57","-0x042a49c079","0x7c260bbc0f374160", "0x5738dbc076b09c3c96106c3a5fee","0xe11969b37e863182","234"]));
         const findings = await handleTransaction(txEvent);
         expect(findings).toEqual([createFinding(v3Create2(ethAddress,mnwAddress,3000),ethAddress,mnwAddress,3000)]);
     });
 
     it("returns multiple findings if there is more than one Swap event emitted by the pool contract in a transaction", async () => {
-    
+ 
       const txEvent:TestTransactionEvent = new TestTransactionEvent().setFrom("0xaaa");
       const log = event_iface.encodeEventLog(event, ["0xE592427A0AEce92De3Edee1F18E0157C05861564","0xDEF171Fe48CF0115B1d80b88dc8eAB59176FEe57","-0x042a49c079","0x7c260bbc0f374160", "0x5738dbc076b09c3c96106c3a5fee","0xe11969b37e863182","234"])
-      const log1 = event_iface.encodeEventLog(event, [createAddress("0x123"),createAddress("0x321"),createAddress("0x11"),"0xaa","0x12","0xabc","123"]);
+      const log1 = event_iface.encodeEventLog(event, [createAddress("0x123"),createAddress("0x321"),"0x11","0xaa","0x12","0xabc","123"]);
       txEvent.addAnonymousEventLog(ethmnwAddress,log.data, ...log.topics);
       txEvent.addAnonymousEventLog(ethusdcAddress,log1.data,...log1.topics)
       // txEvent.addEventLog("Swap(address,address,int256,int256,uint160,uint128,int24)",ethmnwAddress, encodeParameters(["indexed address","indexed address","int256","int256","uint160","uint128","int24"],["0xE592427A0AEce92De3Edee1F18E0157C05861564","0xDEF171Fe48CF0115B1d80b88dc8eAB59176FEe57","-0x042a49c079","0x7c260bbc0f374160", "0x5738dbc076b09c3c96106c3a5fee","0xe11969b37e863182","234"]));
