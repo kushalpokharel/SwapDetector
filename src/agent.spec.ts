@@ -91,9 +91,9 @@ describe("Swap method detector on Uniswap's pool ", () => {
       // txEvent.addEventLog("Swap(address,address,int256,int256,uint160,uint128,int24)",ethmnwAddress, encodeParameters(["indexed address","indexed address","int256","int256","uint160","uint128","int24"],["0xE592427A0AEce92De3Edee1F18E0157C05861564","0xDEF171Fe48CF0115B1d80b88dc8eAB59176FEe57","-0x042a49c079","0x7c260bbc0f374160", "0x5738dbc076b09c3c96106c3a5fee","0xe11969b37e863182","234"]));
       const findings = await handleTransaction(txEvent);
       expect(findings).toEqual([
-        createFinding(v3Create2(usdcAddress,ethAddress,3000),usdcAddress,ethAddress,3000),
+        
         createFinding(v3Create2(ethAddress,mnwAddress,3000),ethAddress,mnwAddress,3000),
-       
+        createFinding(v3Create2(ethAddress,usdcAddress,3000),usdcAddress,ethAddress,3000),
       ]);
     });
 
